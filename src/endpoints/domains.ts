@@ -4,6 +4,8 @@ import type {
 	AddUrlForwardResponse,
 	CheckDomainPayload,
 	CheckDomainResponse,
+	CreateDomainPayload,
+	CreateDomainResponse,
 	CreateGluePayload,
 	CreateGlueResponse,
 	DeleteGluePayload,
@@ -69,6 +71,36 @@ export const createDomainsNamespace = (client: PorkbunClient) => {
 
 			return client.request<CheckDomainResponse>(
 				`${BASE_PATH}/checkDomain/${payload.domain}`,
+			);
+		},
+
+		/**
+		 * Registers a domain.
+		 * @param payload.domain The domain to register without protocol or path.
+		 * @param payload.cost Cost in pennies from checkDomain.
+		 * @param payload.agreeToTerms Must be "yes" or "1".
+		 * @returns A promise that resolves with operation status.
+		 * @example
+		 * client.domains.createDomain({ domain: 'example.com', cost: 1108, agreeToTerms: 'yes' });
+		 */
+		createDomain(payload: CreateDomainPayload): Promise<CreateDomainResponse> {
+			assertValid(validateDomain(payload.domain), "domain", payload.domain);
+			if (!Number.isInteger(payload.cost) || payload.cost <= 0) {
+				throw new Error(
+					"Validation failed for 'cost': cost must be a positive integer (pennies)",
+				);
+			}
+			if (payload.agreeToTerms !== "yes" && payload.agreeToTerms !== "1") {
+				throw new Error(
+					"Validation failed for 'agreeToTerms': must be 'yes' or '1'",
+				);
+			}
+			return client.request<CreateDomainResponse>(
+				`${BASE_PATH}/create/${payload.domain}`,
+				{
+					cost: payload.cost,
+					agreeToTerms: payload.agreeToTerms,
+				},
 			);
 		},
 

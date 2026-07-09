@@ -221,6 +221,19 @@ export const validateYesNo = (value: string): ValidationResult => {
 	return { valid: true };
 };
 
+/**
+ * Validates registration period in years.
+ */
+export const validateYears = (years: number): ValidationResult => {
+	if (!Number.isInteger(years)) {
+		return { valid: false, reason: "Years must be an integer" };
+	}
+	if (years < 1 || years > 10) {
+		return { valid: false, reason: "Years must be between 1 and 10" };
+	}
+	return { valid: true };
+};
+
 const VALID_DNS_RECORD_TYPES: readonly string[] =
 	Object.values(DNS_RECORD_TYPE);
 

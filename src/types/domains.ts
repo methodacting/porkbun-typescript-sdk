@@ -51,6 +51,18 @@ export interface CheckDomainResponse extends PorkbunBaseResponse {
 	};
 }
 
+export interface CreateDomainPayload {
+	domain: string;
+	cost: number;
+	agreeToTerms: "yes" | "1";
+}
+export interface CreateDomainResponse extends PorkbunBaseResponse {
+	domain: string;
+	cost: number;
+	orderId: number;
+	balance?: number;
+}
+
 export interface GetNsPayload {
 	domain: string;
 }
